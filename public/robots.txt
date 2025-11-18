@@ -1,2 +1,14 @@
 User-agent: *
-Disallow:
+Allow: /
+
+# Sitemap
+Sitemap: https://yourdomain.com/sitemap.xml
+
+# Disallow admin and auth routes
+Disallow: /admin/
+Disallow: /petugas/
+Disallow: /login
+Disallow: /register
+Disallow: /dashboard
+Disallow: /password-reset
+Disallow: /email/verify

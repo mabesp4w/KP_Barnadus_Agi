@@ -63,4 +63,7 @@ Route::prefix('user')->name('user.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\User\UserController::class, 'dashboard'])->name('dashboard');
 });
 
+// Sitemap
+Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
+
 require __DIR__.'/auth.php';

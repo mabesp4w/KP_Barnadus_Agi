@@ -1,10 +1,11 @@
 import UserLayout from '@/Layouts/UserLayout';
-import { Head, Link, router } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import Card, { CardBody, CardHeader, CardTitle } from '@/Components/ui/Card';
 import { SearchBox } from '@/Components/ui';
 import Button from '@/Components/ui/Button';
 import Badge from '@/Components/ui/Badge';
 import MapView from '@/Components/maps/MapView';
+import SEO from '@/Components/SEO';
 import { MapPin, School, Phone, Mail, Globe, Award, Calendar } from 'lucide-react';
 import useAOS from '@/hooks/useAOS';
 import { useMemo, useEffect } from 'react';
@@ -68,7 +69,11 @@ export default function SekolahIndex({ sekolahs, kecamatans, kelurahans, filters
 
     return (
         <UserLayout title="Daftar Sekolah">
-            <Head title="Daftar Sekolah - SIG SMP YPK Jayapura" />
+            <SEO
+                title="Daftar Sekolah"
+                description="Daftar lengkap Sekolah Menengah Pertama (SMP) Yayasan Pendidikan Kristen (YPK) di Kota Jayapura. Temukan informasi sekolah, lokasi di peta interaktif, dan data lengkap setiap sekolah."
+                keywords="Daftar Sekolah, SMP YPK Jayapura, Peta Sekolah, Lokasi Sekolah, Informasi Sekolah, NPSN, Akreditasi Sekolah"
+            />
 
             <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                 {/* Header */}

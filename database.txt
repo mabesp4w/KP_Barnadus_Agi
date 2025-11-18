@@ -1,0 +1,281 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('kecamatan', function (Blueprint $table) {
+            $table->id();
+            $table->string('nm_kecamatan');
+            $table->text('ket')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('kecamatan');
+    }
+};
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('kelurahan', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('id_kecamatan')->constrained('kecamatan')->onDelete('restrict');
+            $table->string('nm_kelurahan');
+            $table->string('kode_pos', 10)->nullable();
+            $table->text('ket')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('kelurahan');
+    }
+};
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('sekolah', function (Blueprint $table) {
+            $table->id();
+            $table->string('npsn')->unique()->comment('Nomor Pokok Sekolah Nasional');
+            $table->string('nm_sekolah');
+            $table->foreignId('id_kelurahan')->constrained('kelurahan')->onDelete('restrict');
+            $table->text('alamat');
+            $table->string('no_telp')->nullable();
+            $table->string('email')->nullable();
+            $table->string('website')->nullable();
+
+            // Koordinat Geografis
+            $table->decimal('latitude', 10, 8);
+            $table->decimal('longitude', 11, 8);
+
+            // Informasi Sekolah
+            $table->year('thn_berdiri')->nullable();
+            $table->enum('status_sekolah', ['aktif', 'tidak_aktif'])->default('aktif');
+            $table->enum('akreditasi', ['A', 'B', 'C', 'Belum'])->default('Belum');
+            $table->date('tgl_akreditasi')->nullable();
+
+            $table->text('ket')->nullable();
+            $table->string('foto_utama')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('sekolah');
+    }
+};
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('kepsek', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('id_sekolah')->constrained('sekolah')->onDelete('cascade');
+            $table->string('nm_kepsek');
+            $table->string('nip')->nullable();
+            $table->string('no_telp')->nullable();
+            $table->string('email')->nullable();
+            $table->enum('jenis_kelamin', ['L', 'P'])->nullable();
+            $table->string('pendidikan_terakhir')->nullable();
+            $table->date('tgl_mulai');
+            $table->date('tgl_selesai')->nullable();
+            $table->boolean('aktif')->default(true);
+            $table->string('foto')->nullable();
+            $table->text('ket')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('kepsek');
+    }
+};
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('data_siswa', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('id_sekolah')->constrained('sekolah')->onDelete('cascade');
+            $table->string('thn_ajaran', 9)->comment('Format: 2024/2025');
+
+            // Kelas 7
+            $table->integer('jml_kelas_7')->default(0);
+            $table->integer('jml_siswa_l_7')->default(0);
+            $table->integer('jml_siswa_p_7')->default(0);
+
+            // Kelas 8
+            $table->integer('jml_kelas_8')->default(0);
+            $table->integer('jml_siswa_l_8')->default(0);
+            $table->integer('jml_siswa_p_8')->default(0);
+
+            // Kelas 9
+            $table->integer('jml_kelas_9')->default(0);
+            $table->integer('jml_siswa_l_9')->default(0);
+            $table->integer('jml_siswa_p_9')->default(0);
+
+
+            $table->text('ket')->nullable();
+            $table->timestamps();
+            $table->unique(['id_sekolah', 'thn_ajaran']);
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('data_siswa');
+    }
+};
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('data_gtk', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('id_sekolah')->constrained('sekolah')->onDelete('cascade');
+            $table->string('thn_ajaran', 9)->comment('Format: 2024/2025');
+
+            // Guru
+            $table->integer('jml_guru_pns')->default(0);
+            $table->integer('jml_guru_honor')->default(0);
+            $table->integer('jml_guru_kontrak')->default(0);
+            $table->integer('jml_guru_s1')->default(0);
+            $table->integer('jml_guru_s2')->default(0);
+            $table->integer('jml_guru_sertifikasi')->default(0);
+
+            // Tenaga Kependidikan
+            $table->integer('jml_tendik_pns')->default(0);
+            $table->integer('jml_tendik_honor')->default(0);
+            $table->integer('jml_tendik_kontrak')->default(0);
+
+
+            $table->text('ket')->nullable();
+            $table->timestamps();
+            $table->unique(['id_sekolah', 'thn_ajaran']);
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('data_gtk');
+    }
+};
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('galeri', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('id_sekolah')->constrained('sekolah')->onDelete('cascade');
+            $table->string('judul');
+            $table->text('deskripsi')->nullable();
+            $table->string('file_foto');
+            $table->enum('kategori', ['gedung', 'kegiatan', 'prestasi', 'lainnya'])->default('lainnya');
+            $table->integer('urutan')->default(0);
+            $table->boolean('tampilkan')->default(true);
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('galeri');
+    }
+};
+

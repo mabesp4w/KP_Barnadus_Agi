@@ -1,6 +1,6 @@
 import UserLayout from '@/Layouts/UserLayout';
-import { Head } from '@inertiajs/react';
 import Card, { CardBody, CardHeader, CardTitle } from '@/Components/ui/Card';
+import SEO from '@/Components/SEO';
 import { Info, Target, Users, Award, Building2, UserCircle } from 'lucide-react';
 import useAOS from '@/hooks/useAOS';
 
@@ -9,7 +9,11 @@ export default function Tentang() {
 
     return (
         <UserLayout title="Tentang">
-            <Head title="Tentang - SIG SMP YPK Jayapura" />
+            <SEO
+                title="Tentang"
+                description="Tentang Sistem Informasi Geografis (SIG) untuk Pemetaan dan Pengelolaan Data Sekolah Menengah Pertama (SMP) Yayasan Pendidikan Kristen (YPK) Kota Jayapura. Pelajari visi, misi, dan tujuan sistem ini."
+                keywords="Tentang SIG, Sistem Informasi Geografis SMP YPK, Visi Misi, Tujuan Sistem, Informasi Aplikasi"
+            />
 
             <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
                 {/* Header */}

@@ -1,8 +1,9 @@
 import UserLayout from '@/Layouts/UserLayout';
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import Card, { CardBody, CardHeader, CardTitle } from '@/Components/ui/Card';
 import Button from '@/Components/ui/Button';
 import Badge from '@/Components/ui/Badge';
+import SEO from '@/Components/SEO';
 import { School, Images, Users, TrendingUp, MapPin, Building2 } from 'lucide-react';
 import useAOS from '@/hooks/useAOS';
 
@@ -54,7 +55,11 @@ export default function UserDashboard({ auth, stats }) {
 
     return (
         <UserLayout title="Beranda">
-            <Head title="Beranda - SIG SMP YPK Jayapura" />
+            <SEO
+                title="Beranda"
+                description="Sistem Informasi Geografis Berbasis Web untuk Pemetaan dan Pengelolaan Data Sekolah Menengah Pertama (SMP) Yayasan Pendidikan Kristen (YPK) Kota Jayapura. Akses informasi sekolah, peta interaktif, dan galeri foto."
+                keywords="SIG, Sistem Informasi Geografis, SMP YPK, Jayapura, Sekolah, Pendidikan, Peta Sekolah, Data Sekolah, Dashboard"
+            />
 
             <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                 {/* Welcome Section */}

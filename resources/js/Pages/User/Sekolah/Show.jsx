@@ -1,11 +1,13 @@
 import MapView from '@/Components/maps/MapView';
 import Badge from '@/Components/ui/Badge';
 import Card, { CardBody, CardHeader, CardTitle } from '@/Components/ui/Card';
+import SEO from '@/Components/SEO';
 import useAOS from '@/hooks/useAOS';
 import UserLayout from '@/Layouts/UserLayout';
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { ArrowLeft, Calendar, Globe, GraduationCap, Mail, MapPin, Phone, School, UserCheck } from 'lucide-react';
 import { useState } from 'react';
+import { usePage } from '@inertiajs/react';
 import 'yet-another-react-lightbox/styles.css';
 
 export default function SekolahShow({ sekolah, kepsek, galeris, sekolahsForMap = [], dataSiswa = [], dataGtk = [] }) {
@@ -37,9 +39,60 @@ export default function SekolahShow({ sekolah, kepsek, galeris, sekolahsForMap =
         return <Badge variant={colors[akreditasi] || 'error'}>{akreditasi || 'Belum'}</Badge>;
     };
 
+    const { url } = usePage();
+    const siteUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const sekolahUrl = `${siteUrl}${url}`;
+    const sekolahImage = sekolah.foto_utama 
+        ? `${siteUrl}/storage/${sekolah.foto_utama}` 
+        : `${siteUrl}/images/logo.png`;
+    
+    const sekolahDescription = `Informasi lengkap tentang ${sekolah.nm_sekolah} (NPSN: ${sekolah.npsn}). Lokasi: ${sekolah.kelurahan?.nm_kelurahan || ''}${sekolah.kelurahan?.kecamatan ? `, ${sekolah.kelurahan.kecamatan.nm_kecamatan}` : ''}. Akreditasi: ${sekolah.akreditasi || 'Belum'}. ${sekolah.ket || ''}`;
+
+    const structuredData = {
+        '@context': 'https://schema.org',
+        '@type': 'School',
+        name: sekolah.nm_sekolah,
+        identifier: {
+            '@type': 'PropertyValue',
+            name: 'NPSN',
+            value: sekolah.npsn,
+        },
+        address: {
+            '@type': 'PostalAddress',
+            streetAddress: sekolah.alamat,
+            addressLocality: sekolah.kelurahan?.nm_kelurahan || '',
+            addressRegion: sekolah.kelurahan?.kecamatan?.nm_kecamatan || '',
+            addressCountry: 'ID',
+        },
+        geo: {
+            '@type': 'GeoCoordinates',
+            latitude: sekolah.latitude,
+            longitude: sekolah.longitude,
+        },
+        telephone: sekolah.no_telp || undefined,
+        email: sekolah.email || undefined,
+        url: sekolah.website || undefined,
+        image: sekolahImage,
+        ...(kepsek && {
+            principal: {
+                '@type': 'Person',
+                name: kepsek.nm_kepsek,
+                jobTitle: 'Kepala Sekolah',
+            },
+        }),
+    };
+
     return (
         <UserLayout title={sekolah.nm_sekolah}>
-            <Head title={`${sekolah.nm_sekolah} - SIG SMP YPK Jayapura`} />
+            <SEO
+                title={sekolah.nm_sekolah}
+                description={sekolahDescription}
+                keywords={`${sekolah.nm_sekolah}, NPSN ${sekolah.npsn}, SMP YPK, ${sekolah.kelurahan?.nm_kelurahan || ''}, ${sekolah.kelurahan?.kecamatan?.nm_kecamatan || ''}, Sekolah Jayapura`}
+                image={sekolahImage}
+                url={sekolahUrl}
+                type="article"
+                structuredData={structuredData}
+            />
 
             <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                 {/* Back Button */}

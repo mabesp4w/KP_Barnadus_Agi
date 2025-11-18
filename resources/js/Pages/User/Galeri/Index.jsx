@@ -1,8 +1,9 @@
 import UserLayout from '@/Layouts/UserLayout';
-import { Head, Link, router } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import Card, { CardBody } from '@/Components/ui/Card';
 import { SearchBox } from '@/Components/ui';
 import Badge from '@/Components/ui/Badge';
+import SEO from '@/Components/SEO';
 import { Images, School } from 'lucide-react';
 import useAOS from '@/hooks/useAOS';
 import Lightbox from 'yet-another-react-lightbox';
@@ -67,7 +68,11 @@ export default function GaleriIndex({ galeris, sekolahs, filters }) {
 
     return (
         <UserLayout title="Galeri Foto">
-            <Head title="Galeri Foto - SIG SMP YPK Jayapura" />
+            <SEO
+                title="Galeri Foto"
+                description="Galeri foto kegiatan, fasilitas, dan prestasi Sekolah Menengah Pertama (SMP) Yayasan Pendidikan Kristen (YPK) di Kota Jayapura. Lihat dokumentasi visual dari berbagai sekolah."
+                keywords="Galeri Foto, Foto Sekolah, Kegiatan Sekolah, Fasilitas Sekolah, Prestasi Sekolah, SMP YPK Jayapura"
+            />
 
             <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                 {/* Header */}

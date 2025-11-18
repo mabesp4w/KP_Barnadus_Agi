@@ -44,6 +44,12 @@ class HandleInertiaRequests extends Middleware
                 'error' => $request->session()->pull('error'),
                 'message' => $request->session()->pull('message'),
             ],
+            'seo' => [
+                'siteName' => config('app.name', 'SIG SMP YPK Jayapura'),
+                'siteUrl' => config('app.url'),
+                'defaultDescription' => 'Sistem Informasi Geografis Berbasis Web untuk Pemetaan dan Pengelolaan Data Sekolah Menengah Pertama (SMP) Yayasan Pendidikan Kristen (YPK) Kota Jayapura',
+                'defaultKeywords' => 'SIG, Sistem Informasi Geografis, SMP YPK, Jayapura, Sekolah, Pendidikan, Peta Sekolah, Data Sekolah',
+            ],
         ];
     }
 }
