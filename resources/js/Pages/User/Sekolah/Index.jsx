@@ -1,14 +1,12 @@
-import UserLayout from '@/Layouts/UserLayout';
-import { Link, router } from '@inertiajs/react';
-import Card, { CardBody, CardHeader, CardTitle } from '@/Components/ui/Card';
-import { SearchBox } from '@/Components/ui';
-import Button from '@/Components/ui/Button';
-import Badge from '@/Components/ui/Badge';
 import MapView from '@/Components/maps/MapView';
 import SEO from '@/Components/SEO';
-import { MapPin, School, Phone, Mail, Globe, Award, Calendar } from 'lucide-react';
+import Badge from '@/Components/ui/Badge';
+import Card, { CardBody, CardHeader, CardTitle } from '@/Components/ui/Card';
 import useAOS from '@/hooks/useAOS';
-import { useMemo, useEffect } from 'react';
+import UserLayout from '@/Layouts/UserLayout';
+import { Link, router } from '@inertiajs/react';
+import { Award, Calendar, Globe, Mail, MapPin, Phone, School, Search } from 'lucide-react';
+import { useEffect, useMemo } from 'react';
 
 export default function SekolahIndex({ sekolahs, kecamatans, kelurahans, filters, sekolahsForMap = [] }) {
     useAOS();
@@ -34,11 +32,7 @@ export default function SekolahIndex({ sekolahs, kecamatans, kelurahans, filters
         if (filters?.kecamatan && filters?.kelurahan && !currentKelurahanValid) {
             const newFilters = { ...filters };
             delete newFilters.kelurahan;
-            router.get(
-                getRouteUrl('user.sekolah.index', '/sekolah'),
-                newFilters,
-                { preserveState: true, replace: true }
-            );
+            router.get(getRouteUrl('user.sekolah.index', '/sekolah'), newFilters, { preserveState: true, replace: true });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filters?.kecamatan]);
@@ -82,116 +76,7 @@ export default function SekolahIndex({ sekolahs, kecamatans, kelurahans, filters
                     <p className="mt-2 text-base-content/70">Temukan informasi lengkap tentang sekolah di daerah Anda</p>
                 </div>
 
-                {/* Search */}
-                <div className="mb-6" data-aos="fade-up" data-aos-delay="100">
-                    <SearchBox
-                        placeholder="Cari sekolah (NPSN, nama, alamat)..."
-                        searchUrl={getRouteUrl('user.sekolah.index', '/sekolah')}
-                        resetUrl={getRouteUrl('user.sekolah.index', '/sekolah')}
-                        defaultValue={filters?.search || ''}
-                    />
-                </div>
-
-                {/* Filters */}
-                <Card className="mb-6" data-aos="fade-up" data-aos-delay="150">
-                    <CardBody>
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                            {/* Filter Kecamatan */}
-                            {kecamatans && kecamatans.length > 0 && (
-                                <div>
-                                    <label className="label-text mb-2 block">Filter Kecamatan:</label>
-                                    <select
-                                        className="select select-bordered w-full"
-                                        value={filters?.kecamatan || ''}
-                                        onChange={(e) => {
-                                            const selectedKecamatan = e.target.value || null;
-                                            // Reset kelurahan jika kecamatan berubah
-                                            router.get(
-                                                getRouteUrl('user.sekolah.index', '/sekolah'),
-                                                { ...filters, kecamatan: selectedKecamatan, kelurahan: null },
-                                                { preserveState: true }
-                                            );
-                                        }}
-                                    >
-                                        <option value="">Semua Kecamatan</option>
-                                        {kecamatans.map((kecamatan) => (
-                                            <option key={kecamatan.id} value={kecamatan.id}>
-                                                {kecamatan.nm_kecamatan}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            )}
-
-                            {/* Filter Kelurahan */}
-                            <div>
-                                <label className="label-text mb-2 block">Filter Kelurahan:</label>
-                                <select
-                                    className="select select-bordered w-full"
-                                    value={filters?.kelurahan || ''}
-                                    onChange={(e) => {
-                                        router.get(
-                                            getRouteUrl('user.sekolah.index', '/sekolah'),
-                                            { ...filters, kelurahan: e.target.value || null },
-                                            { preserveState: true }
-                                        );
-                                    }}
-                                    disabled={filters?.kecamatan && filteredKelurahans.length === 0}
-                                >
-                                    <option value="">
-                                        {filters?.kecamatan
-                                            ? filteredKelurahans.length === 0
-                                                ? 'Tidak ada kelurahan'
-                                                : 'Semua Kelurahan'
-                                            : 'Pilih Kecamatan terlebih dahulu'}
-                                    </option>
-                                    {filteredKelurahans && filteredKelurahans.length > 0 ? (
-                                        filteredKelurahans.map((kelurahan) => (
-                                            <option key={kelurahan.id} value={kelurahan.id}>
-                                                {kelurahan.nm_kelurahan}
-                                            </option>
-                                        ))
-                                    ) : filters?.kecamatan ? null : (
-                                        kelurahans?.map((kelurahan) => (
-                                            <option key={kelurahan.id} value={kelurahan.id}>
-                                                {kelurahan.nm_kelurahan} - {kelurahan.kecamatan?.nm_kecamatan}
-                                            </option>
-                                        ))
-                                    )}
-                                </select>
-                                {filters?.kecamatan && filteredKelurahans.length === 0 && (
-                                    <p className="mt-1 text-xs text-base-content/60">
-                                        Tidak ada kelurahan di kecamatan ini
-                                    </p>
-                                )}
-                            </div>
-
-                            {/* Filter Akreditasi */}
-                            <div>
-                                <label className="label-text mb-2 block">Filter Akreditasi:</label>
-                                <select
-                                    className="select select-bordered w-full"
-                                    value={filters?.akreditasi || ''}
-                                    onChange={(e) => {
-                                        router.get(
-                                            getRouteUrl('user.sekolah.index', '/sekolah'),
-                                            { ...filters, akreditasi: e.target.value || null },
-                                            { preserveState: true }
-                                        );
-                                    }}
-                                >
-                                    <option value="">Semua Akreditasi</option>
-                                    <option value="A">A</option>
-                                    <option value="B">B</option>
-                                    <option value="C">C</option>
-                                    <option value="Belum">Belum</option>
-                                </select>
-                            </div>
-                        </div>
-                    </CardBody>
-                </Card>
-
-                {/* Peta */}
+                {/* Peta dengan Search dan Filter di dalamnya */}
                 <Card className="mb-6" data-aos="fade-up" data-aos-delay="200">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
@@ -199,27 +84,174 @@ export default function SekolahIndex({ sekolahs, kecamatans, kelurahans, filters
                             Peta Lokasi Sekolah
                         </CardTitle>
                     </CardHeader>
-                    <CardBody>
-                        {sekolahsForMap && sekolahsForMap.length > 0 ? (
-                            <>
-                                <MapView sekolahs={sekolahsForMap} height="500px" />
-                                <p className="mt-2 text-xs text-base-content/60">
+                    <CardBody className="p-0">
+                        <div className="relative">
+                            {/* Search dan Filter Overlay di pojok kiri atas */}
+                            <div className="absolute top-2 left-2 z-[1000] w-full max-w-xs space-y-2 rounded-lg bg-base-100 p-3 shadow-lg">
+                                {/* Search Box */}
+                                <div>
+                                    <form
+                                        onSubmit={(e) => {
+                                            e.preventDefault();
+                                            router.get(
+                                                getRouteUrl('user.sekolah.index', '/sekolah'),
+                                                { ...filters, search: e.target.search?.value || null },
+                                                { preserveState: true },
+                                            );
+                                        }}
+                                        className="flex gap-2"
+                                    >
+                                        <input
+                                            type="text"
+                                            name="search"
+                                            placeholder="Cari sekolah..."
+                                            className="input-bordered input input-sm w-full"
+                                            defaultValue={filters?.search || ''}
+                                        />
+                                        <button type="submit" className="btn btn-sm btn-primary">
+                                            <Search className="h-4 w-4" />
+                                        </button>
+                                        {filters?.search && (
+                                            <button
+                                                type="button"
+                                                className="btn btn-outline btn-sm"
+                                                onClick={() => {
+                                                    router.get(
+                                                        getRouteUrl('user.sekolah.index', '/sekolah'),
+                                                        { ...filters, search: null },
+                                                        { preserveState: true },
+                                                    );
+                                                }}
+                                            >
+                                                Reset
+                                            </button>
+                                        )}
+                                    </form>
+                                </div>
+
+                                {/* Filter Kecamatan */}
+                                {kecamatans && kecamatans.length > 0 && (
+                                    <div>
+                                        <label className="label-text mb-1 block text-xs font-semibold">Kecamatan:</label>
+                                        <select
+                                            className="select-bordered select w-full select-sm"
+                                            value={filters?.kecamatan || ''}
+                                            onChange={(e) => {
+                                                const selectedKecamatan = e.target.value || null;
+                                                // Reset kelurahan jika kecamatan berubah
+                                                router.get(
+                                                    getRouteUrl('user.sekolah.index', '/sekolah'),
+                                                    { ...filters, kecamatan: selectedKecamatan, kelurahan: null },
+                                                    { preserveState: true },
+                                                );
+                                            }}
+                                        >
+                                            <option value="">Semua Kecamatan</option>
+                                            {kecamatans.map((kecamatan) => (
+                                                <option key={kecamatan.id} value={kecamatan.id}>
+                                                    {kecamatan.nm_kecamatan}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                )}
+
+                                {/* Filter Kelurahan */}
+                                <div>
+                                    <label className="label-text mb-1 block text-xs font-semibold">Kelurahan:</label>
+                                    <select
+                                        className="select-bordered select w-full select-sm"
+                                        value={filters?.kelurahan || ''}
+                                        onChange={(e) => {
+                                            router.get(
+                                                getRouteUrl('user.sekolah.index', '/sekolah'),
+                                                { ...filters, kelurahan: e.target.value || null },
+                                                { preserveState: true },
+                                            );
+                                        }}
+                                        disabled={filters?.kecamatan && filteredKelurahans.length === 0}
+                                    >
+                                        <option value="">
+                                            {filters?.kecamatan
+                                                ? filteredKelurahans.length === 0
+                                                    ? 'Tidak ada kelurahan'
+                                                    : 'Semua Kelurahan'
+                                                : 'Pilih Kecamatan terlebih dahulu'}
+                                        </option>
+                                        {filteredKelurahans && filteredKelurahans.length > 0
+                                            ? filteredKelurahans.map((kelurahan) => (
+                                                  <option key={kelurahan.id} value={kelurahan.id}>
+                                                      {kelurahan.nm_kelurahan}
+                                                  </option>
+                                              ))
+                                            : filters?.kecamatan
+                                              ? null
+                                              : kelurahans?.map((kelurahan) => (
+                                                    <option key={kelurahan.id} value={kelurahan.id}>
+                                                        {kelurahan.nm_kelurahan} - {kelurahan.kecamatan?.nm_kecamatan}
+                                                    </option>
+                                                ))}
+                                    </select>
+                                </div>
+
+                                {/* Filter Akreditasi */}
+                                <div>
+                                    <label className="label-text mb-1 block text-xs font-semibold">Akreditasi:</label>
+                                    <select
+                                        className="select-bordered select w-full select-sm"
+                                        value={filters?.akreditasi || ''}
+                                        onChange={(e) => {
+                                            router.get(
+                                                getRouteUrl('user.sekolah.index', '/sekolah'),
+                                                { ...filters, akreditasi: e.target.value || null },
+                                                { preserveState: true },
+                                            );
+                                        }}
+                                    >
+                                        <option value="">Semua Akreditasi</option>
+                                        <option value="A">A</option>
+                                        <option value="B">B</option>
+                                        <option value="C">C</option>
+                                        <option value="Belum">Belum</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            {/* Notifikasi jika tidak ada sekolah yang sesuai filter */}
+                            {(!sekolahsForMap || sekolahsForMap.length === 0) &&
+                                (filters?.search || filters?.kecamatan || filters?.kelurahan || filters?.akreditasi) && (
+                                    <div className="absolute top-12 right-2 z-[1000] max-w-xs rounded-lg bg-warning/90 p-3 shadow-lg">
+                                        <div className="flex items-start gap-2">
+                                            <MapPin className="h-5 w-5 flex-shrink-0 text-warning-content" />
+                                            <div>
+                                                <p className="text-sm font-semibold text-warning-content">
+                                                    Tidak ada sekolah yang sesuai dengan filter
+                                                </p>
+                                                <p className="mt-1 text-xs text-warning-content/80">
+                                                    Coba ubah filter atau hapus pencarian untuk melihat semua sekolah.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                            {/* Peta selalu ditampilkan */}
+                            <MapView sekolahs={sekolahsForMap || []} height="500px" />
+
+                            {/* Info jumlah sekolah di bawah peta */}
+                            {sekolahsForMap && sekolahsForMap.length > 0 ? (
+                                <p className="mt-2 px-4 pb-4 text-xs text-base-content/60">
                                     <span className="mr-1 inline-block h-3 w-3 rounded-full bg-blue-500"></span>
                                     Menampilkan {sekolahsForMap.length} sekolah di peta. Klik marker untuk melihat informasi sekolah.
                                 </p>
-                            </>
-                        ) : (
-                            <div className="flex h-[500px] items-center justify-center">
-                                <div className="text-center">
-                                    <MapPin className="mx-auto h-12 w-12 text-base-content/30" />
-                                    <p className="mt-4 text-base-content/70">
-                                        {filters?.search || filters?.kecamatan || filters?.kelurahan || filters?.akreditasi
-                                            ? 'Tidak ada sekolah yang sesuai dengan filter.'
-                                            : 'Belum ada data sekolah dengan koordinat.'}
-                                    </p>
-                                </div>
-                            </div>
-                        )}
+                            ) : (
+                                <p className="mt-2 px-4 pb-4 text-xs text-base-content/60">
+                                    {filters?.search || filters?.kecamatan || filters?.kelurahan || filters?.akreditasi
+                                        ? 'Tidak ada sekolah yang sesuai dengan filter.'
+                                        : 'Belum ada data sekolah dengan koordinat.'}
+                                </p>
+                            )}
+                        </div>
                     </CardBody>
                 </Card>
 
@@ -310,7 +342,7 @@ export default function SekolahIndex({ sekolahs, kecamatans, kelurahans, filters
                                     <div className="mt-4">
                                         <Link
                                             href={getRouteUrl('user.sekolah.show', `/sekolah/${sekolah.id}`)}
-                                            className="btn btn-primary btn-sm w-full"
+                                            className="btn w-full btn-sm btn-primary"
                                         >
                                             Lihat Detail
                                         </Link>
@@ -342,4 +374,3 @@ export default function SekolahIndex({ sekolahs, kecamatans, kelurahans, filters
         </UserLayout>
     );
 }
-

@@ -10,12 +10,43 @@ L.Icon.Default.mergeOptions({
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 });
 
+// Definisi jenis peta yang tersedia
+// Catatan: Label yang ditampilkan tergantung pada tile layer, bukan Leaflet itu sendiri
+const mapTypes = {
+    osm: {
+        name: 'OpenStreetMap (Label Lengkap)',
+        url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        subdomains: 'abc',
+    },
+    positron: {
+        name: 'Positron (Light)',
+        url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+    },
+    voyager: {
+        name: 'Voyager (Colorful)',
+        url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+    },
+    dark: {
+        name: 'Dark Matter',
+        url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+    },
+};
+
 export default function MapPicker({ latitude, longitude, onLocationChange, height = '400px', sekolahs = [] }) {
     const mapRef = useRef(null);
     const mapInstanceRef = useRef(null);
     const markerRef = useRef(null);
     const sekolahMarkersRef = useRef([]);
+    const tileLayerRef = useRef(null);
     const [isMapReady, setIsMapReady] = useState(false);
+    const [mapType, setMapType] = useState('osm'); // Default ke OpenStreetMap untuk label lebih lengkap
 
     // Koordinat default untuk Kota Jayapura
     const defaultLat = -2.5333;
@@ -33,11 +64,20 @@ export default function MapPicker({ latitude, longitude, onLocationChange, heigh
             zoomControl: true,
         }).setView([initialLat, initialLng], 13);
 
-        // Tambahkan tile layer (OpenStreetMap)
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        // Tambahkan tile layer default
+        const defaultMapType = mapTypes[mapType] || mapTypes.osm;
+        const tileLayerOptions = {
+            attribution: defaultMapType.attribution,
             maxZoom: 19,
-        }).addTo(map);
+        };
+        if (defaultMapType.subdomains) {
+            tileLayerOptions.subdomains = defaultMapType.subdomains;
+        }
+        if (defaultMapType.tms) {
+            tileLayerOptions.tms = true;
+        }
+        const tileLayer = L.tileLayer(defaultMapType.url, tileLayerOptions).addTo(map);
+        tileLayerRef.current = tileLayer;
 
         // Buat marker yang bisa digeser
         const marker = L.marker([initialLat, initialLng], {
@@ -161,6 +201,35 @@ export default function MapPicker({ latitude, longitude, onLocationChange, heigh
         }
     }, [latitude, longitude, isMapReady]);
 
+    // Update tile layer saat map type berubah
+    useEffect(() => {
+        if (!isMapReady || !mapInstanceRef.current || !tileLayerRef.current) return;
+
+        const selectedMapType = mapTypes[mapType] || mapTypes.osm;
+        
+        // Hapus tile layer lama
+        mapInstanceRef.current.removeLayer(tileLayerRef.current);
+        
+        // Tambahkan tile layer baru
+        const tileLayerOptions = {
+            attribution: selectedMapType.attribution,
+            maxZoom: 19,
+        };
+        if (selectedMapType.subdomains) {
+            tileLayerOptions.subdomains = selectedMapType.subdomains;
+        }
+        if (selectedMapType.tms) {
+            tileLayerOptions.tms = true;
+        }
+        const newTileLayer = L.tileLayer(selectedMapType.url, tileLayerOptions).addTo(mapInstanceRef.current);
+        
+        tileLayerRef.current = newTileLayer;
+    }, [mapType, isMapReady]);
+
+    const handleMapTypeChange = (e) => {
+        setMapType(e.target.value);
+    };
+
     return (
         <>
             <style>{`
@@ -169,7 +238,21 @@ export default function MapPicker({ latitude, longitude, onLocationChange, heigh
                     border: none !important;
                 }
             `}</style>
-            <div className="w-full overflow-hidden rounded-lg border border-base-300" style={{ height }}>
+            <div className="relative w-full overflow-hidden rounded-lg border border-base-300" style={{ height }}>
+                <div className="absolute top-2 right-2 z-[1000]">
+                    <select
+                        value={mapType}
+                        onChange={handleMapTypeChange}
+                        className="select-bordered select select-sm bg-base-100 shadow-lg"
+                        style={{ minWidth: '180px' }}
+                    >
+                        {Object.entries(mapTypes).map(([key, value]) => (
+                            <option key={key} value={key}>
+                                {value.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
                 <div ref={mapRef} className="z-0 h-full w-full" style={{ height }} />
             </div>
         </>
