@@ -84,7 +84,7 @@ class SekolahController extends Controller
             ->whereNotNull('longitude')
             ->where('latitude', '!=', '')
             ->where('longitude', '!=', '')
-            ->select('id', 'nm_sekolah', 'latitude', 'longitude', 'alamat')
+            ->select('id', 'nm_sekolah', 'latitude', 'longitude', 'alamat', 'akreditasi')
             ->get();
 
         return Inertia::render('Admin/Sekolah/Form', [
@@ -121,7 +121,7 @@ class SekolahController extends Controller
             ->where('latitude', '!=', '')
             ->where('longitude', '!=', '')
             ->where('id', '!=', $sekolah->id)
-            ->select('id', 'nm_sekolah', 'latitude', 'longitude', 'alamat')
+            ->select('id', 'nm_sekolah', 'latitude', 'longitude', 'alamat', 'akreditasi')
             ->get();
 
         return Inertia::render('Admin/Sekolah/Form', [
@@ -154,4 +154,3 @@ class SekolahController extends Controller
             ->with('success', "Berhasil menghapus data {$nmSekolah}.");
     }
 }
-

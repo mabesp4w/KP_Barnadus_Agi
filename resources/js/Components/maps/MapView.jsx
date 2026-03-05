@@ -55,6 +55,16 @@ export default function MapView({ sekolahs = [], height = '400px', centerLat = n
     const mapCenterLat = centerLat && parseFloat(centerLat) ? parseFloat(centerLat) : defaultLat;
     const mapCenterLng = centerLng && parseFloat(centerLng) ? parseFloat(centerLng) : defaultLng;
 
+    const getAkreditasiMarkerConfig = (akreditasi) => {
+        const markerMap = {
+            A: { label: 'A', color: '#10b981' }, // hijau
+            B: { label: 'B', color: '#3b82f6' }, // biru
+            C: { label: 'C', color: '#f59e0b' }, // oranye
+        };
+
+        return markerMap[akreditasi] || { label: '-', color: '#6b7280' }; // default untuk "Belum"/kosong
+    };
+
     useEffect(() => {
         if (!mapRef.current || mapInstanceRef.current) return;
 
@@ -129,29 +139,33 @@ export default function MapView({ sekolahs = [], height = '400px', centerLat = n
 
             if (isNaN(lat) || isNaN(lng)) return;
 
-            // Tentukan apakah marker ini harus berkedip (jika ini adalah sekolah yang sedang dilihat dan aktif)
+            // Marker sekolah terpilih dibuat berkedip agar mudah dikenali
             const shouldBlink = highlightedSekolahId && sekolah.id === highlightedSekolahId && isActive;
-            const markerId = `marker-${sekolah.id}`;
-            
-            // Tentukan warna marker: merah jika berkedip, biru jika normal
-            const markerColor = shouldBlink ? '#ef4444' : '#3b82f6';
-            
-            // Buat custom icon untuk marker sekolah (warna merah jika berkedip, biru jika normal, bentuk bulat)
+            const { label: markerLabel, color: markerColor } = getAkreditasiMarkerConfig(sekolah.akreditasi);
+
+            // Marker menampilkan huruf akreditasi (A/B/C) dengan warna sesuai akreditasi
             const sekolahIcon = L.divIcon({
-                className: `custom-marker-sekolah ${shouldBlink ? 'blinking-marker' : ''}`,
-                html: `<div id="${markerId}" class="${shouldBlink ? 'marker-blink' : ''}" style="
+                className: 'custom-marker-sekolah',
+                html: `<div class="${shouldBlink ? 'marker-focus' : ''}" style="
                     background-color: ${markerColor};
-                    width: 20px;
-                    height: 20px;
+                    width: 30px;
+                    height: 30px;
                     border-radius: 50%;
-                    border: 3px solid white;
-                    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+                    border: 2px solid #ffffff;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.35);
                     position: relative;
                     cursor: pointer;
-                "></div>`,
-                iconSize: [20, 20],
-                iconAnchor: [10, 10],
-                popupAnchor: [0, -10],
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #ffffff;
+                    font-size: 14px;
+                    font-weight: 700;
+                    line-height: 1;
+                ">${markerLabel}</div>`,
+                iconSize: [30, 30],
+                iconAnchor: [15, 15],
+                popupAnchor: [0, -12],
             });
 
             const marker = L.marker([lat, lng], {
@@ -360,21 +374,18 @@ export default function MapView({ sekolahs = [], height = '400px', centerLat = n
                 .custom-popup-sekolah .leaflet-popup-tip {
                     background: white;
                 }
-                @keyframes markerBlink {
+                @keyframes markerPulse {
                     0%, 100% {
-                        opacity: 1;
                         transform: scale(1);
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.35);
                     }
                     50% {
-                        opacity: 0.4;
-                        transform: scale(1.3);
+                        transform: scale(1.18);
+                        box-shadow: 0 0 0 8px rgba(239, 68, 68, 0.18);
                     }
                 }
-                .marker-blink {
-                    animation: markerBlink 1.5s ease-in-out infinite !important;
-                }
-                .blinking-marker .marker-blink {
-                    animation: markerBlink 1.5s ease-in-out infinite !important;
+                .marker-focus {
+                    animation: markerPulse 1.4s ease-in-out infinite;
                 }
             `}</style>
             <div className="relative w-full overflow-hidden rounded-lg border border-base-300" style={{ height }}>
@@ -397,4 +408,3 @@ export default function MapView({ sekolahs = [], height = '400px', centerLat = n
         </>
     );
 }
-

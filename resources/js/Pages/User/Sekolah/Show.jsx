@@ -166,10 +166,13 @@ export default function SekolahShow({ sekolah, kepsek, galeris, sekolahsForMap =
                                                 isActive={sekolah.status_sekolah === 'aktif'}
                                             />
                                             <p className="mt-2 text-xs text-base-content/60">
-                                                <span className="mr-1 inline-block h-3 w-3 animate-pulse rounded-full bg-red-500"></span>
-                                                Marker merah berkedip menunjukkan lokasi sekolah ini.
-                                                <span className="mr-1 ml-2 inline-block h-3 w-3 rounded-full bg-blue-500"></span>
-                                                Marker biru menunjukkan lokasi sekolah lain.
+                                                <span className="mr-1 inline-flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white">A</span>
+                                                Akreditasi A,
+                                                <span className="mr-1 ml-2 inline-flex h-4 w-4 items-center justify-center rounded-full bg-blue-500 text-[10px] font-bold text-white">B</span>
+                                                Akreditasi B,
+                                                <span className="mr-1 ml-2 inline-flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[10px] font-bold text-white">C</span>
+                                                Akreditasi C.
+                                                Marker sekolah ini berkedip untuk penanda lokasi yang sedang dilihat.
                                             </p>
                                         </div>
                                     )}

@@ -56,6 +56,16 @@ export default function MapPicker({ latitude, longitude, onLocationChange, heigh
     const initialLat = latitude && parseFloat(latitude) ? parseFloat(latitude) : defaultLat;
     const initialLng = longitude && parseFloat(longitude) ? parseFloat(longitude) : defaultLng;
 
+    const getAkreditasiMarkerConfig = (akreditasi) => {
+        const markerMap = {
+            A: { label: 'A', color: '#10b981' }, // hijau
+            B: { label: 'B', color: '#3b82f6' }, // biru
+            C: { label: 'C', color: '#f59e0b' }, // oranye
+        };
+
+        return markerMap[akreditasi] || { label: '-', color: '#6b7280' };
+    };
+
     useEffect(() => {
         if (!mapRef.current || mapInstanceRef.current) return;
 
@@ -148,21 +158,30 @@ export default function MapPicker({ latitude, longitude, onLocationChange, heigh
 
             if (isNaN(lat) || isNaN(lng)) return;
 
-            // Buat custom icon untuk marker sekolah (warna biru, bentuk bulat)
+            const { label: markerLabel, color: markerColor } = getAkreditasiMarkerConfig(sekolah.akreditasi);
+
+            // Marker sekolah referensi menampilkan huruf akreditasi
             const sekolahIcon = L.divIcon({
                 className: 'custom-marker-sekolah',
                 html: `<div style="
-                    background-color: #3b82f6;
-                    width: 20px;
-                    height: 20px;
+                    background-color: ${markerColor};
+                    width: 28px;
+                    height: 28px;
                     border-radius: 50%;
-                    border: 3px solid white;
+                    border: 2px solid white;
                     box-shadow: 0 2px 6px rgba(0,0,0,0.4);
                     position: relative;
-                "></div>`,
-                iconSize: [20, 20],
-                iconAnchor: [10, 10],
-                popupAnchor: [0, -10],
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #ffffff;
+                    font-size: 13px;
+                    font-weight: 700;
+                    line-height: 1;
+                ">${markerLabel}</div>`,
+                iconSize: [28, 28],
+                iconAnchor: [14, 14],
+                popupAnchor: [0, -12],
             });
 
             const sekolahMarker = L.marker([lat, lng], {
@@ -174,6 +193,7 @@ export default function MapPicker({ latitude, longitude, onLocationChange, heigh
             const popupContent = `
                 <div style="min-width: 150px;">
                     <strong>${sekolah.nm_sekolah || 'Sekolah'}</strong>
+                    ${sekolah.akreditasi ? `<br><small>Akreditasi: ${sekolah.akreditasi}</small>` : ''}
                     ${sekolah.alamat ? `<br><small>${sekolah.alamat}</small>` : ''}
                 </div>
             `;

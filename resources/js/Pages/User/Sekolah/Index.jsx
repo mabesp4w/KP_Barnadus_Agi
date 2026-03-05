@@ -240,10 +240,17 @@ export default function SekolahIndex({ sekolahs, kecamatans, kelurahans, filters
 
                             {/* Info jumlah sekolah di bawah peta */}
                             {sekolahsForMap && sekolahsForMap.length > 0 ? (
-                                <p className="mt-2 px-4 pb-4 text-xs text-base-content/60">
-                                    <span className="mr-1 inline-block h-3 w-3 rounded-full bg-blue-500"></span>
-                                    Menampilkan {sekolahsForMap.length} sekolah di peta. Klik marker untuk melihat informasi sekolah.
-                                </p>
+                                <div className="mt-2 px-4 pb-4 text-xs text-base-content/60">
+                                    <p>Menampilkan {sekolahsForMap.length} sekolah di peta. Klik marker untuk melihat informasi sekolah.</p>
+                                    <p className="mt-1">
+                                        <span className="mr-1 inline-flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white">A</span>
+                                        Akreditasi A
+                                        <span className="mr-1 ml-3 inline-flex h-4 w-4 items-center justify-center rounded-full bg-blue-500 text-[10px] font-bold text-white">B</span>
+                                        Akreditasi B
+                                        <span className="mr-1 ml-3 inline-flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[10px] font-bold text-white">C</span>
+                                        Akreditasi C
+                                    </p>
+                                </div>
                             ) : (
                                 <p className="mt-2 px-4 pb-4 text-xs text-base-content/60">
                                     {filters?.search || filters?.kecamatan || filters?.kelurahan || filters?.akreditasi

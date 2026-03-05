@@ -295,10 +295,17 @@ export default function SekolahForm({ sekolah = null, kelurahans = [], sekolahs 
                                 />
                             </div>
                             {sekolahs && sekolahs.length > 0 && (
-                                <p className="mb-2 text-xs text-base-content/60">
-                                    <span className="mr-1 inline-block h-3 w-3 rounded-full bg-blue-500"></span>
-                                    Marker biru menunjukkan lokasi sekolah lain yang sudah terdaftar
-                                </p>
+                                <div className="mb-2 text-xs text-base-content/60">
+                                    <p>Marker pada peta menunjukkan akreditasi sekolah lain yang sudah terdaftar:</p>
+                                    <p className="mt-1">
+                                        <span className="mr-1 inline-flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white">A</span>
+                                        Akreditasi A
+                                        <span className="mr-1 ml-3 inline-flex h-4 w-4 items-center justify-center rounded-full bg-blue-500 text-[10px] font-bold text-white">B</span>
+                                        Akreditasi B
+                                        <span className="mr-1 ml-3 inline-flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[10px] font-bold text-white">C</span>
+                                        Akreditasi C
+                                    </p>
+                                </div>
                             )}
 
                             {/* Input Koordinat (Read-only atau bisa diedit manual) */}
